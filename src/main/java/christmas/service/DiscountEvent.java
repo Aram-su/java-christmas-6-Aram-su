@@ -15,7 +15,6 @@ public class DiscountEvent {
     private static final String SPECIAL_DISCOUNT = "특별 할인";
     private static final String TYPE_DESSERT = "dessert";
     private static final String TYPE_MAIN = "main";
-    private static final List<Integer> SPECIAL_DAYS = List.of(3, 10, 17, 24, 25, 31);
     private static final int EVENT_THRESHOLD = 10000;
     private static final int CHRISTMAS_D_DAY = 25;
     private static final int DEFAULT_DISCOUNT_AMOUNT = 900;
@@ -31,6 +30,8 @@ public class DiscountEvent {
     private static final int THURSDAY = 0;
     private static final int ZERO = 0;
     private static final int DISCOUNT_THRESHOLD = 0;
+    private static final List<Integer> SPECIAL_DAYS = List.of(3, 10, 17, 24, 25, 31);
+    private static final List<Integer> WEEK_DAYS = List.of(SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY);
 
     public static Map<String, Integer> applyDiscount(Reservation reservation) {
         Map<String, Integer> discountHistory = new HashMap<>();
@@ -97,8 +98,7 @@ public class DiscountEvent {
     }
 
     private static boolean isWeekDay(int reservationDate) {
-        List<Integer> weekDay = List.of(SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY);
-        return weekDay.contains(calculateDayOfWeek(reservationDate));
+        return WEEK_DAYS.contains(calculateDayOfWeek(reservationDate));
     }
 
     private static int calculateDayOfWeek(int reservationDate) {
