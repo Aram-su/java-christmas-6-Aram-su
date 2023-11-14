@@ -11,12 +11,15 @@ public class DiscountEvent {
 
     private static final String D_DAY_DISCOUNT = "크리스마스 디데이 할인";
     private static final String WEEKDAY_DISCOUNT = "평일 할인";
+    private static final String WEEKEND_DISCOUNT = "주말 할인";
     private static final String TYPE_DESSERT = "dessert";
+    private static final String TYPE_MAIN = "main";
     private static final int EVENT_THRESHOLD = 10000;
     private static final int CHRISTMAS_D_DAY = 25;
     private static final int DEFAULT_DISCOUNT_AMOUNT = 900;
     private static final int INCREMENT_AMOUNT = 100;
     private static final int WEEKDAY_DISCOUNT_AMOUNT = 2023;
+    private static final int WEEKEND_DISCOUNT_AMOUNT = 2023;
     private static final int DAYS_IN_A_WEEK = 7;
     private static final int SUNDAY = 3;
     private static final int MONDAY = 4;
@@ -32,6 +35,7 @@ public class DiscountEvent {
         if (totalOrderAmount >= EVENT_THRESHOLD) {
             applyChristmasDdayDiscount(reservation, discountHistory);
             applyWeekdayDiscount(reservation, discountHistory);
+            applyWeekendDiscount(reservation, discountHistory);
         }
         return discountHistory;
     }
@@ -57,6 +61,17 @@ public class DiscountEvent {
         }
     }
 
+    private static void applyWeekendDiscount(Reservation reservation, Map<String, Integer> discountHistory) {
+        int reservationDate = reservation.getReservationDate();
+
+        if (!isWeekDay(reservationDate)) {
+            int mainCount = countMain(reservation.getOrder());
+            int discountAmount = WEEKEND_DISCOUNT_AMOUNT * mainCount;
+
+            discountHistory.put(WEEKEND_DISCOUNT, discountAmount);
+        }
+    }
+
     private static boolean isWeekDay(int reservationDate) {
         List<Integer> weekDay = List.of(SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY);
         return weekDay.contains(calculateDayOfWeek(reservationDate));
@@ -78,6 +93,20 @@ public class DiscountEvent {
 
     private static boolean isDessert(String menu) {
         return Objects.equals(Menu.getTypeByName(menu), TYPE_DESSERT);
+    }
+
+    private static int countMain(Map<String, Integer> order) {
+        int cnt = ZERO;
+        for (String menu : order.keySet()) {
+            if (isMain(menu)) {
+                cnt += getMenuQuantity(order, menu);
+            }
+        }
+        return cnt;
+    }
+
+    private static boolean isMain(String menu) {
+        return Objects.equals(Menu.getTypeByName(menu), TYPE_MAIN);
     }
 
     private static int getMenuQuantity(Map<String, Integer> order, String menu) {
