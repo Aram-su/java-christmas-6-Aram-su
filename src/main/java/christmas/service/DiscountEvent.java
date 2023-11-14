@@ -60,7 +60,7 @@ public class DiscountEvent {
         int reservationDate = reservation.getReservationDate();
 
         if (isWeekDay(reservationDate)) {
-            int dessertCount = countDessert(reservation.getOrder());
+            int dessertCount = countDessert(reservation.getMenuAndQuantity());
             int discountAmount = WEEKDAY_DISCOUNT_AMOUNT * dessertCount;
 
             updateDiscountHistory(discountHistory, WEEKDAY_DISCOUNT, discountAmount);
@@ -71,7 +71,7 @@ public class DiscountEvent {
         int reservationDate = reservation.getReservationDate();
 
         if (!isWeekDay(reservationDate)) {
-            int mainCount = countMain(reservation.getOrder());
+            int mainCount = countMain(reservation.getMenuAndQuantity());
             int discountAmount = WEEKEND_DISCOUNT_AMOUNT * mainCount;
 
             updateDiscountHistory(discountHistory, WEEKEND_DISCOUNT, discountAmount);
@@ -105,11 +105,11 @@ public class DiscountEvent {
         return reservationDate % DAYS_IN_A_WEEK;
     }
 
-    private static int countDessert(Map<String, Integer> order) {
+    private static int countDessert(Map<String, Integer> menuAndQuantity) {
         int cnt = ZERO;
-        for (String menu : order.keySet()) {
+        for (String menu : menuAndQuantity.keySet()) {
             if (isDessert(menu)) {
-                cnt += getMenuQuantity(order, menu);
+                cnt += getMenuQuantity(menuAndQuantity, menu);
             }
         }
         return cnt;
@@ -119,11 +119,11 @@ public class DiscountEvent {
         return Objects.equals(Menu.getTypeByName(menu), TYPE_DESSERT);
     }
 
-    private static int countMain(Map<String, Integer> order) {
+    private static int countMain(Map<String, Integer> menuAndQuantity) {
         int cnt = ZERO;
-        for (String menu : order.keySet()) {
+        for (String menu : menuAndQuantity.keySet()) {
             if (isMain(menu)) {
-                cnt += getMenuQuantity(order, menu);
+                cnt += getMenuQuantity(menuAndQuantity, menu);
             }
         }
         return cnt;
@@ -133,8 +133,8 @@ public class DiscountEvent {
         return Objects.equals(Menu.getTypeByName(menu), TYPE_MAIN);
     }
 
-    private static int getMenuQuantity(Map<String, Integer> order, String menu) {
-        return order.get(menu);
+    private static int getMenuQuantity(Map<String, Integer> menuAndQuantity, String menu) {
+        return menuAndQuantity.get(menu);
     }
 
 }

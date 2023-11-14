@@ -20,13 +20,13 @@ public class InputParser {
     }
 
     public static Map<String, Integer> parseUndividedOrder(String undividedOrder) {
-        HashMap<String, Integer> order = new HashMap<>();
+        HashMap<String, Integer> menuAndQuantity = new HashMap<>();
 
         String[] dividedOrders = divideOrder(undividedOrder);
         for (String dividedOrder : dividedOrders) {
-            saveOrder(order, dividedOrder);
+            saveMenuAndQuantity(menuAndQuantity, dividedOrder);
         }
-        return order;
+        return menuAndQuantity;
     }
 
     private static String[] divideOrder(String undividedOrder) {
@@ -37,21 +37,21 @@ public class InputParser {
         return dividedOrder.split(MENU_QUANTITY_SEPARATOR);
     }
 
-    private static void saveOrder(HashMap<String, Integer> order, String dividedOrder) {
-        String[] menuAndQuantity = divideMenuAndQuantity(dividedOrder);
+    private static void saveMenuAndQuantity(HashMap<String, Integer> menuAndQuantity, String dividedOrder) {
+        String[] dividedMenuAndQuantity = divideMenuAndQuantity(dividedOrder);
 
-        String menu = menuAndQuantity[MENU_INDEX];
-        Integer quantity = Integer.parseInt(menuAndQuantity[QUANTITY_INDEX]);
+        String menu = dividedMenuAndQuantity[MENU_INDEX];
+        Integer quantity = Integer.parseInt(dividedMenuAndQuantity[QUANTITY_INDEX]);
 
-        validateMenuAndQuantity(order, menu, quantity);
+        validateMenuAndQuantity(menuAndQuantity, menu, quantity);
 
-        order.put(menu, quantity);
+        menuAndQuantity.put(menu, quantity);
     }
 
-    private static void validateMenuAndQuantity(HashMap<String, Integer> order, String menu, Integer quantity) {
+    private static void validateMenuAndQuantity(HashMap<String, Integer> menuAndQuantity, String menu, Integer quantity) {
         validateExistingMenu(menu);
         validateQuantityRange(quantity);
-        validateDuplicateMenu(order, menu);
+        validateDuplicateMenu(menuAndQuantity, menu);
     }
 
     private static void validateExistingMenu(String menu) {
@@ -66,8 +66,8 @@ public class InputParser {
         }
     }
 
-    private static void validateDuplicateMenu(HashMap<String, Integer> order, String menu) {
-        if (order.containsKey(menu)) {
+    private static void validateDuplicateMenu(HashMap<String, Integer> menuAndQuantity, String menu) {
+        if (menuAndQuantity.containsKey(menu)) {
             throw new IllegalArgumentException(ORDER_ERROR);
         }
     }

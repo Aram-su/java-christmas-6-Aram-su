@@ -24,9 +24,9 @@ public class InputValidator {
         validateOrderFormat(undividedOrder);
     }
 
-    public static void validateOrder(Map<String, Integer> order) {
-        validateHasNonDrinkMenu(order);
-        validateTotalQuantity(order);
+    public static void validateMenuAndQuantity(Map<String, Integer> menuAndQuantity) {
+        validateHasNonDrinkMenu(menuAndQuantity);
+        validateTotalQuantity(menuAndQuantity);
     }
 
     private static void validateIsNumber(String whenToVisit) {
@@ -50,8 +50,8 @@ public class InputValidator {
         }
     }
 
-    private static void validateHasNonDrinkMenu(Map<String, Integer> order) {
-        for (String menu : order.keySet()) {
+    private static void validateHasNonDrinkMenu(Map<String, Integer> menuAndQuantity) {
+        for (String menu : menuAndQuantity.keySet()) {
             if (isNonDrink(menu)) {
                 return;
             }
@@ -63,17 +63,17 @@ public class InputValidator {
         return !Objects.equals(Menu.getTypeByName(menu), TYPE_DRINK);
     }
 
-    private static void validateTotalQuantity(Map<String, Integer> order) {
-        int totalQuantity = calculateTotalQuantity(order);
+    private static void validateTotalQuantity(Map<String, Integer> menuAndQuantity) {
+        int totalQuantity = calculateTotalQuantity(menuAndQuantity);
         if (totalQuantity > MAX_TOTAL_QUANTITY) {
             throw new IllegalArgumentException(ORDER_ERROR);
         }
     }
 
-    private static int calculateTotalQuantity(Map<String, Integer> order) {
+    private static int calculateTotalQuantity(Map<String, Integer> menuAndQuantity) {
         int totalQuantity = ZERO;
-        for (String menu : order.keySet()) {
-            totalQuantity += order.get(menu);
+        for (String menu : menuAndQuantity.keySet()) {
+            totalQuantity += menuAndQuantity.get(menu);
         }
         return totalQuantity;
     }
