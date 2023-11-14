@@ -27,6 +27,7 @@ public class DiscountEvent {
     private static final int WEDNESDAY = 6;
     private static final int THURSDAY = 0;
     private static final int ZERO = 0;
+    private static final int DISCOUNT_THRESHOLD = 0;
 
     public static Map<String, Integer> applyDiscount(Reservation reservation) {
         Map<String, Integer> discountHistory = new HashMap<>();
@@ -46,7 +47,7 @@ public class DiscountEvent {
         if (reservationDate <= CHRISTMAS_D_DAY) {
             int discountAmount = DEFAULT_DISCOUNT_AMOUNT + reservationDate * INCREMENT_AMOUNT;
 
-            discountHistory.put(D_DAY_DISCOUNT, discountAmount);
+            updateDiscountHistory(discountHistory, D_DAY_DISCOUNT, discountAmount);
         }
     }
 
@@ -57,7 +58,7 @@ public class DiscountEvent {
             int dessertCount = countDessert(reservation.getOrder());
             int discountAmount = WEEKDAY_DISCOUNT_AMOUNT * dessertCount;
 
-            discountHistory.put(WEEKDAY_DISCOUNT, discountAmount);
+            updateDiscountHistory(discountHistory, WEEKDAY_DISCOUNT, discountAmount);
         }
     }
 
@@ -68,7 +69,14 @@ public class DiscountEvent {
             int mainCount = countMain(reservation.getOrder());
             int discountAmount = WEEKEND_DISCOUNT_AMOUNT * mainCount;
 
-            discountHistory.put(WEEKEND_DISCOUNT, discountAmount);
+            updateDiscountHistory(discountHistory, WEEKEND_DISCOUNT, discountAmount);
+        }
+    }
+
+    private static void updateDiscountHistory(Map<String, Integer> discountHistory, String discountType,
+        int discountAmount) {
+        if (discountAmount > DISCOUNT_THRESHOLD) {
+            discountHistory.put(discountType, discountAmount);
         }
     }
 
