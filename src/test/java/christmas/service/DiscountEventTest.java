@@ -146,4 +146,30 @@ class DiscountEventTest {
         assertEquals(null, result.get(WEEKEND_DISCOUNT));
     }
 
+    @DisplayName("평일 할인은 일요일 ~ 목요일이지만, 디저트 메뉴가 없으면 할인하지 않는다.")
+    @ParameterizedTest
+    @ValueSource(ints = {3, 4, 5, 6, 7, 10, 11, 12, 13, 14})
+    void applyWeekdayDiscount_WeekDay_No_Dessert(int reservationDate) {
+        Map<String, Integer> order = new HashMap<>();
+        order.put("티본스테이크", 1);
+        Reservation reservation = new Reservation(reservationDate, order);
+
+        Map<String, Integer> result = DiscountEvent.applyDiscount(reservation);
+
+        assertEquals(null, result.get(WEEKDAY_DISCOUNT));
+    }
+
+    @DisplayName("주말 할인은 금요일, 토요일이지만 메인 메뉴가 없으면 할인하지 않는다.")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 8, 9})
+    void applyWeekendDiscount_Weekend_No_Main(int reservationDate) {
+        Map<String, Integer> order = new HashMap<>();
+        order.put("초코케이크", 1);
+        Reservation reservation = new Reservation(reservationDate, order);
+
+        Map<String, Integer> result = DiscountEvent.applyDiscount(reservation);
+
+        assertEquals(null, result.get(WEEKEND_DISCOUNT));
+    }
+
 }
