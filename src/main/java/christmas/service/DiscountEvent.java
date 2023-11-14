@@ -34,55 +34,55 @@ public class DiscountEvent {
     private static final List<Integer> WEEK_DAYS = List.of(SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY);
 
     public static Map<String, Integer> applyDiscount(Reservation reservation) {
-        Map<String, Integer> discountHistory = new HashMap<>();
+        Map<String, Integer> discountAndAmount = new HashMap<>();
         int totalOrderAmount = reservation.getTotalOrderAmount();
 
         if (totalOrderAmount >= EVENT_THRESHOLD) {
-            applyChristmasDdayDiscount(reservation, discountHistory);
-            applyWeekdayDiscount(reservation, discountHistory);
-            applyWeekendDiscount(reservation, discountHistory);
-            applySpecialDiscount(reservation, discountHistory);
+            applyChristmasDdayDiscount(reservation, discountAndAmount);
+            applyWeekdayDiscount(reservation, discountAndAmount);
+            applyWeekendDiscount(reservation, discountAndAmount);
+            applySpecialDiscount(reservation, discountAndAmount);
         }
-        return discountHistory;
+        return discountAndAmount;
     }
 
-    private static void applyChristmasDdayDiscount(Reservation reservation, Map<String, Integer> discountHistory) {
+    private static void applyChristmasDdayDiscount(Reservation reservation, Map<String, Integer> discountAndAmount) {
         int reservationDate = reservation.getReservationDate();
 
         if (reservationDate <= CHRISTMAS_D_DAY) {
             int discountAmount = DEFAULT_DISCOUNT_AMOUNT + reservationDate * INCREMENT_AMOUNT;
 
-            updateDiscountHistory(discountHistory, D_DAY_DISCOUNT, discountAmount);
+            updateDiscountAndAmount(discountAndAmount, D_DAY_DISCOUNT, discountAmount);
         }
     }
 
-    private static void applyWeekdayDiscount(Reservation reservation, Map<String, Integer> discountHistory) {
+    private static void applyWeekdayDiscount(Reservation reservation, Map<String, Integer> discountAndAmount) {
         int reservationDate = reservation.getReservationDate();
 
         if (isWeekDay(reservationDate)) {
             int dessertCount = countDessert(reservation.getMenuAndQuantity());
             int discountAmount = WEEKDAY_DISCOUNT_AMOUNT * dessertCount;
 
-            updateDiscountHistory(discountHistory, WEEKDAY_DISCOUNT, discountAmount);
+            updateDiscountAndAmount(discountAndAmount, WEEKDAY_DISCOUNT, discountAmount);
         }
     }
 
-    private static void applyWeekendDiscount(Reservation reservation, Map<String, Integer> discountHistory) {
+    private static void applyWeekendDiscount(Reservation reservation, Map<String, Integer> discountAndAmount) {
         int reservationDate = reservation.getReservationDate();
 
         if (!isWeekDay(reservationDate)) {
             int mainCount = countMain(reservation.getMenuAndQuantity());
             int discountAmount = WEEKEND_DISCOUNT_AMOUNT * mainCount;
 
-            updateDiscountHistory(discountHistory, WEEKEND_DISCOUNT, discountAmount);
+            updateDiscountAndAmount(discountAndAmount, WEEKEND_DISCOUNT, discountAmount);
         }
     }
 
-    private static void applySpecialDiscount(Reservation reservation, Map<String, Integer> discountHistory) {
+    private static void applySpecialDiscount(Reservation reservation, Map<String, Integer> discountAndAmount) {
         int reservationDate = reservation.getReservationDate();
 
         if (isSpecialDay(reservationDate)) {
-            updateDiscountHistory(discountHistory, SPECIAL_DISCOUNT, SPECIAL_DISCOUNT_AMOUNT);
+            updateDiscountAndAmount(discountAndAmount, SPECIAL_DISCOUNT, SPECIAL_DISCOUNT_AMOUNT);
         }
     }
 
@@ -90,10 +90,10 @@ public class DiscountEvent {
         return SPECIAL_DAYS.contains(reservationDate);
     }
 
-    private static void updateDiscountHistory(Map<String, Integer> discountHistory, String discountType,
+    private static void updateDiscountAndAmount(Map<String, Integer> discountAndAmount, String discountType,
         int discountAmount) {
         if (discountAmount > DISCOUNT_THRESHOLD) {
-            discountHistory.put(discountType, discountAmount);
+            discountAndAmount.put(discountType, discountAmount);
         }
     }
 
