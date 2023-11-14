@@ -12,14 +12,17 @@ public class DiscountEvent {
     private static final String D_DAY_DISCOUNT = "크리스마스 디데이 할인";
     private static final String WEEKDAY_DISCOUNT = "평일 할인";
     private static final String WEEKEND_DISCOUNT = "주말 할인";
+    private static final String SPECIAL_DISCOUNT = "특별 할인";
     private static final String TYPE_DESSERT = "dessert";
     private static final String TYPE_MAIN = "main";
+    private static final List<Integer> SPECIAL_DAYS = List.of(3, 10, 17, 24, 25, 31);
     private static final int EVENT_THRESHOLD = 10000;
     private static final int CHRISTMAS_D_DAY = 25;
     private static final int DEFAULT_DISCOUNT_AMOUNT = 900;
     private static final int INCREMENT_AMOUNT = 100;
     private static final int WEEKDAY_DISCOUNT_AMOUNT = 2023;
     private static final int WEEKEND_DISCOUNT_AMOUNT = 2023;
+    private static final int SPECIAL_DISCOUNT_AMOUNT = 1000;
     private static final int DAYS_IN_A_WEEK = 7;
     private static final int SUNDAY = 3;
     private static final int MONDAY = 4;
@@ -37,6 +40,7 @@ public class DiscountEvent {
             applyChristmasDdayDiscount(reservation, discountHistory);
             applyWeekdayDiscount(reservation, discountHistory);
             applyWeekendDiscount(reservation, discountHistory);
+            applySpecialDiscount(reservation, discountHistory);
         }
         return discountHistory;
     }
@@ -71,6 +75,18 @@ public class DiscountEvent {
 
             updateDiscountHistory(discountHistory, WEEKEND_DISCOUNT, discountAmount);
         }
+    }
+
+    private static void applySpecialDiscount(Reservation reservation, Map<String, Integer> discountHistory) {
+        int reservationDate = reservation.getReservationDate();
+
+        if (isSpecialDay(reservationDate)) {
+            updateDiscountHistory(discountHistory, SPECIAL_DISCOUNT, SPECIAL_DISCOUNT_AMOUNT);
+        }
+    }
+
+    private static boolean isSpecialDay(int reservationDate) {
+        return SPECIAL_DAYS.contains(reservationDate);
     }
 
     private static void updateDiscountHistory(Map<String, Integer> discountHistory, String discountType,
