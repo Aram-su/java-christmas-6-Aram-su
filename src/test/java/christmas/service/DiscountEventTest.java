@@ -14,6 +14,7 @@ class DiscountEventTest {
 
     private static final String D_DAY_DISCOUNT = "크리스마스 디데이 할인";
     private static final String WEEKDAY_DISCOUNT = "평일 할인";
+    private static final String WEEKEND_DISCOUNT = "주말 할인";
 
     @DisplayName("크리스마스 디데이 할인은 1일에 1000원 할인한다.")
     @Test
@@ -106,5 +107,43 @@ class DiscountEventTest {
         assertEquals(null, result.get(WEEKDAY_DISCOUNT));
     }
 
+    @DisplayName("주말 할인은 금요일, 토요일이고 메인 메뉴가 1개면 2,023원 할인한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 8, 9})
+    void applyWeekendDiscount_Weekend_Main_1(int reservationDate) {
+        Map<String, Integer> order = new HashMap<>();
+        order.put("티본스테이크", 1);
+        Reservation reservation = new Reservation(reservationDate, order);
+
+        Map<String, Integer> result = DiscountEvent.applyDiscount(reservation);
+
+        assertEquals(2023, result.get(WEEKEND_DISCOUNT));
+    }
+
+    @DisplayName("주말 할인은 금요일, 토요일이고 메인 메뉴가 2개면 4,026원 할인한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {15, 16, 22, 23})
+    void applyWeekendDiscount_Weekend_Main_2(int reservationDate) {
+        Map<String, Integer> order = new HashMap<>();
+        order.put("티본스테이크", 2);
+        Reservation reservation = new Reservation(reservationDate, order);
+
+        Map<String, Integer> result = DiscountEvent.applyDiscount(reservation);
+
+        assertEquals(2023 * 2, result.get(WEEKEND_DISCOUNT));
+    }
+
+    @DisplayName("주말 할인은 일요일 ~ 목요일이면 적용되지 않는다.")
+    @ParameterizedTest
+    @ValueSource(ints = {3, 4, 5, 6, 7, 10, 11, 12, 13, 14})
+    void applyWeekendDiscount_Weekday_No_discount(int reservationDate) {
+        Map<String, Integer> order = new HashMap<>();
+        order.put("티본스테이크", 1);
+        Reservation reservation = new Reservation(reservationDate, order);
+
+        Map<String, Integer> result = DiscountEvent.applyDiscount(reservation);
+
+        assertEquals(null, result.get(WEEKEND_DISCOUNT));
+    }
 
 }
