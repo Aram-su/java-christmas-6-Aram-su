@@ -6,17 +6,6 @@ import java.util.Map;
 
 public class Reservation {
 
-    private static final String DECEMBER = "12월 ";
-    private static final String PREVIEW_BENEFITS = "일에 우테코 식당에서 받을 이벤트 혜택 미리 보기!";
-    private static final String WORD_SPACING = " ";
-    private static final String COUNT_UNIT = "개";
-    private static final String NUMBER_FORMAT = "%,d";
-    private static final String WON = "원";
-    private static final String COLON = ": ";
-    private static final String NONE = "없음";
-    private static final String GIFT_EVENT = "증정 이벤트";
-    private static final int ZERO = 0;
-
     private final int reservationDate;
     private final Map<String, Integer> menuAndQuantity;
     private Map<String, Integer> giftAndQuantity;
@@ -38,7 +27,7 @@ public class Reservation {
 
     public String getBadge() {
         if (badge == null) {
-            return NONE;
+            return Constants.NONE;
         }
         return badge;
     }
@@ -56,11 +45,11 @@ public class Reservation {
     }
 
     public String getReservationDateEventPreview() {
-        return DECEMBER + reservationDate + PREVIEW_BENEFITS;
+        return Constants.DECEMBER + reservationDate + Constants.PREVIEW_BENEFITS;
     }
 
     public int getTotalOrderAmount() {
-        int totalOrderAmount = ZERO;
+        int totalOrderAmount = Constants.ZERO;
         for (String menu : menuAndQuantity.keySet()) {
             totalOrderAmount += menuAndQuantity.get(menu) * Menu.getPriceByName(menu);
         }
@@ -68,7 +57,7 @@ public class Reservation {
     }
 
     public int getTotalEventAmount() {
-        int totalEventAmount = ZERO;
+        int totalEventAmount = Constants.ZERO;
         for (String event : eventAndAmount.keySet()) {
             totalEventAmount += eventAndAmount.get(event);
         }
@@ -77,8 +66,8 @@ public class Reservation {
 
     public int getDiscountedAmount() {
         int discountAmount = getTotalEventAmount();
-        if (eventAndAmount.containsKey(GIFT_EVENT)) {
-            discountAmount -= eventAndAmount.get(GIFT_EVENT);
+        if (eventAndAmount.containsKey(Constants.GIFT_EVENT)) {
+            discountAmount -= eventAndAmount.get(Constants.GIFT_EVENT);
         }
         return getTotalOrderAmount() - discountAmount;
     }
@@ -93,7 +82,7 @@ public class Reservation {
         List<String> giftAndQuantityDetails = new ArrayList<>();
 
         if (giftAndQuantity == null || giftAndQuantity.isEmpty()) {
-            giftAndQuantityDetails.add(NONE);
+            giftAndQuantityDetails.add(Constants.NONE);
             return giftAndQuantityDetails;
         }
         generateGiftAndQuantityDetails(giftAndQuantityDetails);
@@ -104,7 +93,7 @@ public class Reservation {
         List<String> eventAndAmountDetails = new ArrayList<>();
 
         if (eventAndAmount == null || eventAndAmount.isEmpty()) {
-            eventAndAmountDetails.add(NONE);
+            eventAndAmountDetails.add(Constants.NONE);
             return eventAndAmountDetails;
         }
         generateEventAndAmountDetails(eventAndAmountDetails);
@@ -113,23 +102,27 @@ public class Reservation {
 
     private void generateMenuAndQuantityDetails(List<String> menuAndQuantityDetails) {
         for (String menu : menuAndQuantity.keySet()) {
-            String detail = menu + WORD_SPACING + menuAndQuantity.get(menu) + COUNT_UNIT;
+            String detail = menu + Constants.WORD_SPACING + menuAndQuantity.get(menu) + Constants.COUNT_UNIT;
             menuAndQuantityDetails.add(detail);
         }
     }
 
     private void generateGiftAndQuantityDetails(List<String> giftAndQuantityDetails) {
         for (String gift : giftAndQuantity.keySet()) {
-            String detail = gift + WORD_SPACING + giftAndQuantity.get(gift) + COUNT_UNIT;
+            String detail = gift + Constants.WORD_SPACING + giftAndQuantity.get(gift) + Constants.COUNT_UNIT;
             giftAndQuantityDetails.add(detail);
         }
     }
 
     private void generateEventAndAmountDetails(List<String> eventAndAmountDetails) {
         for (String event : eventAndAmount.keySet()) {
-            String detail = event + COLON + String.format(NUMBER_FORMAT, -eventAndAmount.get(event)) + WON;
+            String detail = event + Constants.COLON + getFormattedPrice(event) + Constants.WON;
             eventAndAmountDetails.add(detail);
         }
+    }
+
+    private String getFormattedPrice(String event) {
+        return String.format(Constants.NUMBER_FORMAT, -eventAndAmount.get(event));
     }
 
 }

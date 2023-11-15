@@ -1,12 +1,11 @@
 package christmas.service;
 
+import christmas.model.Constants;
 import christmas.model.Menu;
 import christmas.model.Reservation;
 import java.util.Map;
 
 public class Event {
-
-    private static final String GIFT_EVENT = "증정 이벤트";
 
     public static void applyEvent(Reservation reservation) {
         Map<String, Integer> giftAndQuantity = GiftEvent.determineGift(reservation.getTotalOrderAmount());
@@ -26,7 +25,7 @@ public class Event {
         Map<String, Integer> giftAndQuantity) {
         for (String gift : giftAndQuantity.keySet()) {
             int giftAmount = Menu.getPriceByName(gift) * giftAndQuantity.get(gift);
-            eventAndAmount.put(GIFT_EVENT, giftAmount);
+            eventAndAmount.put(Constants.GIFT_EVENT, giftAmount);
         }
     }
 

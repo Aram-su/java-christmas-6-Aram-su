@@ -1,19 +1,11 @@
 package christmas.util;
 
+import christmas.model.Constants;
 import christmas.model.Menu;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InputParser {
-
-    private static final String ORDER_SEPARATOR = ",";
-    private static final String MENU_QUANTITY_SEPARATOR = "-";
-    private static final int MENU_INDEX = 0;
-    private static final int QUANTITY_INDEX = 1;
-
-    private static final int MIN_QUANTITY = 1;
-    private static final int MAX_QUANTITY = 20;
-    private static final String ORDER_ERROR = "[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.";
 
     public static int parseWhenToVisit(String whenToVisit) {
         return Integer.parseInt(whenToVisit);
@@ -30,25 +22,26 @@ public class InputParser {
     }
 
     private static String[] divideOrder(String undividedOrder) {
-        return undividedOrder.split(ORDER_SEPARATOR);
+        return undividedOrder.split(Constants.ORDER_SEPARATOR);
     }
 
     private static String[] divideMenuAndQuantity(String dividedOrder) {
-        return dividedOrder.split(MENU_QUANTITY_SEPARATOR);
+        return dividedOrder.split(Constants.MENU_QUANTITY_SEPARATOR);
     }
 
     private static void saveMenuAndQuantity(HashMap<String, Integer> menuAndQuantity, String dividedOrder) {
         String[] dividedMenuAndQuantity = divideMenuAndQuantity(dividedOrder);
 
-        String menu = dividedMenuAndQuantity[MENU_INDEX];
-        Integer quantity = Integer.parseInt(dividedMenuAndQuantity[QUANTITY_INDEX]);
+        String menu = dividedMenuAndQuantity[Constants.MENU_INDEX];
+        Integer quantity = Integer.parseInt(dividedMenuAndQuantity[Constants.QUANTITY_INDEX]);
 
         validateMenuAndQuantity(menuAndQuantity, menu, quantity);
 
         menuAndQuantity.put(menu, quantity);
     }
 
-    private static void validateMenuAndQuantity(HashMap<String, Integer> menuAndQuantity, String menu, Integer quantity) {
+    private static void validateMenuAndQuantity(HashMap<String, Integer> menuAndQuantity, String menu,
+        Integer quantity) {
         validateExistingMenu(menu);
         validateQuantityRange(quantity);
         validateDuplicateMenu(menuAndQuantity, menu);
@@ -56,19 +49,19 @@ public class InputParser {
 
     private static void validateExistingMenu(String menu) {
         if (!Menu.contains(menu)) {
-            throw new IllegalArgumentException(ORDER_ERROR);
+            throw new IllegalArgumentException(Constants.ORDER_ERROR);
         }
     }
 
     private static void validateQuantityRange(int quantity) {
-        if (quantity < MIN_QUANTITY || quantity > MAX_QUANTITY) {
-            throw new IllegalArgumentException(ORDER_ERROR);
+        if (quantity < Constants.MIN_QUANTITY || quantity > Constants.MAX_QUANTITY) {
+            throw new IllegalArgumentException(Constants.ORDER_ERROR);
         }
     }
 
     private static void validateDuplicateMenu(HashMap<String, Integer> menuAndQuantity, String menu) {
         if (menuAndQuantity.containsKey(menu)) {
-            throw new IllegalArgumentException(ORDER_ERROR);
+            throw new IllegalArgumentException(Constants.ORDER_ERROR);
         }
     }
 
